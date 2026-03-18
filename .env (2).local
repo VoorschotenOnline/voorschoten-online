@@ -1,0 +1,6 @@
+DB_HOST=database-5020040568.webspace-host.com
+DB_PORT=3306
+DB_NAME=dbs15454354
+DB_USER=dbu488924
+DB_PASSWORD=Klepperman#154
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
