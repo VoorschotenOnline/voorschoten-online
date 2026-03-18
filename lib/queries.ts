@@ -1,5 +1,5 @@
 export async function getUpcomingEvents(limit = 20): Promise<EventItem[]> {
-  const events = [
+  const events: EventItem[] = [
     {
       id: 1,
       slug: "markt-voorschoten",
