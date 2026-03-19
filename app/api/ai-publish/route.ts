@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { generateNewsArticle } from "@/lib/ai";
-import { db } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 function createSlug(title: string) {
   return title
@@ -12,7 +13,6 @@ function createSlug(title: string) {
 
 export async function GET() {
   try {
-    // 1. AI artikel genereren
     const article = await generateNewsArticle({
       category: "gemeente",
       sources: [
@@ -27,9 +27,11 @@ export async function GET() {
 
     const slug = createSlug(article.title);
 
-    // 2. Opslaan in database
+    // database pas BINNEN de route importeren
+    const { db } = await import("@/lib/db");
+
     const [result]: any = await db.query(
-      `INSERT INTO published_articles 
+      `INSERT INTO published_articles
       (slug, category, title, article_lead, body, status, is_live, published_at, created_at)
       VALUES (?, ?, ?, ?, ?, 'published', 1, NOW(), NOW())`,
       [
