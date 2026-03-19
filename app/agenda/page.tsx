@@ -2,7 +2,7 @@ import { getUpcomingEvents } from "@/lib/queries";
 import { EventCard } from "@/components/EventCard";
 
 export default async function AgendaPage() {
-  const events = await getUpcomingEvents(50);
+  const events = await getUpcomingEvents();
 
   return (
     <section className="card">
