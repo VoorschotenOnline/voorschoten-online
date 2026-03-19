@@ -1,29 +1,32 @@
 import mysql from "mysql2/promise";
 
 declare global {
-  // eslint-disable-next-line no-var
   var mysqlPool: mysql.Pool | undefined;
 }
 
-function required(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing environment variable: ${name}`);
-  }
-  return value;
+function hasDbConfig() {
+  return (
+    process.env.DB_HOST &&
+    process.env.DB_NAME &&
+    process.env.DB_USER &&
+    process.env.DB_PASSWORD
+  );
 }
 
 export function getDb() {
+  if (!hasDbConfig()) {
+    throw new Error("Database niet geconfigureerd");
+  }
+
   if (!global.mysqlPool) {
     global.mysqlPool = mysql.createPool({
-      host: required("DB_HOST"),
+      host: process.env.DB_HOST,
       port: Number(process.env.DB_PORT || 3306),
-      user: required("DB_USER"),
-      password: required("DB_PASSWORD"),
-      database: required("DB_NAME"),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
       waitForConnections: true,
       connectionLimit: 5,
-      queueLimit: 0,
       charset: "utf8mb4"
     });
   }
@@ -32,7 +35,7 @@ export function getDb() {
 }
 
 export const db = {
-  query: async (...args: Parameters<mysql.Pool["query"]>) => {
+  query: async (...args: any[]) => {
     const pool = getDb();
     return pool.query(...args);
   }
